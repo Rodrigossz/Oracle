@@ -9,6 +9,11 @@ Logo, quando o cara não tem licença, continuo usando o statspack.?
 Entra no sqlplus e executa o script $ORACLE_HOME/rdbms/admin/awrrpt e $ORACLE_HOME/rdbms/admin/addmrpt?
 
 /************************************/
+Qual a versão do banco de dados? Pergunte a eles se tem habilitado o DIAGNOSTIC & TUNNING habilitado. Essas options geram snapshots de hora em hora que mostram a situação do banco de dados.
+Se você souber o horário que são executados essas procs, pede para eles gerarem os relatórios AWR e ADDM do período em que a PROC executou. Caso eles estejam no 11g, essa option necessita de licenciamento, aí eles devem utilizar o Statspack, que retorna o mesmo resultado do AWR. Nesses relatórios são mostrados vários índices de utilização, mas precisamos identificar as queries que são reportadas como mais "danosas" aí fica mais fácil de encontrar onde está o gap.
+
+
+/************************************/
 Nesse caso, por exemplo, o cara tá com perda de performance (16%) devido a 
 alocação de registro de log.? Aí pode ser duas coisas:?
  I/O, disco lento ou?
@@ -19,12 +24,8 @@ Por exemplo, o cara tá com esse problema, o indicado é você aumentar o númer
 
 
 ?11?:?35 O cara lá criou redologs grandes, mas deixou os pequenos.?
-
-
- Então tem hora que tá tudo ok, fica um tempo sem fazer switch e depois faz uma porrada.?
-
-
- Nesse tipo de arquivo tem que ser uniforme. Isso deixa o banco lento
+Então tem hora que tá tudo ok, fica um tempo sem fazer switch e depois faz uma porrada.?
+Nesse tipo de arquivo tem que ser uniforme. Isso deixa o banco lento
 
 /************************************/
 
