@@ -1,0 +1,57 @@
+##Para começar o assessment
+
+O Oracle, como ele tem muitos arquivos de controle e processos em background,o que mais prejudica a performance é perder tempo acessando disco.?
+
+Desde a versão 10g tem um cara foda que é o AWR e o ADDM. São relatórios que dão um mapa completo de performance do banco de dados.?Antes, na versão 9i tinha o Statspack.? Ocorre que na versão 11g a Oracle passou a exigir licença pra uso disso.?
+Logo, quando o cara não tem licença, continuo usando o statspack.?
+
+
+Entra no sqlplus e executa o script $ORACLE_HOME/rdbms/admin/awrrpt e $ORACLE_HOME/rdbms/admin/addmrpt?
+
+/************************************/
+Nesse caso, por exemplo, o cara tá com perda de performance (16%) devido a 
+alocação de registro de log.? Aí pode ser duas coisas:?
+ I/O, disco lento ou?
+ Que é o caso dele, ele criou arquivos de dedo com tamanhos diferentes.?redo
+
+
+Por exemplo, o cara tá com esse problema, o indicado é você aumentar o número de dedo ou aumentá-los. Pois o Oracle, antes de gravar o que ele alterou em datafile de dados o que está em memória, ele joga pra redo e vai copiando a cada checkpoint. Porém se o arquivo for muito pequeno a toda hora ele está trocando de arquivo. A cópia do dedo é cíclica entre os arquivos.?
+
+
+?11?:?35 O cara lá criou redologs grandes, mas deixou os pequenos.?
+
+
+ Então tem hora que tá tudo ok, fica um tempo sem fazer switch e depois faz uma porrada.?
+
+
+ Nesse tipo de arquivo tem que ser uniforme. Isso deixa o banco lento
+
+/************************************/
+
+Para poder debugar e monitorar:
+
+GRANT SELECT ANY CATALOG
+GRANT SELECT (tabelas e views sendo analisadas)
+GRANT DEBUG PROCEDURE 
+
+explain plan for select * from dual;
+Aí esse cara alimenta a tabela plan_table.
+O que eu uso e já faz tudo o que vc precisa é o :
+set autotrace traceonly exp
+após isso toda query que vc executar vai aparecer o plano de acesso.
+ eu:  só isso? depois precisa desligar?
+ Alexandre:  Pra parar coloque set autotrace off
+
+
+Há uma coisa no Oracle que se chama JOB. Nada mais é do que um scheduler.
+A diferença com o cron, é que esse scheduler é interno do Oracle, ou seja, se você tem uma rotina no cron, essa rotina só está em ambiente Linux, se você precisar migrar para Windows, vai ter que escrever outra.
+Já o Job do Oracle funciona independente do SO.
+
+Parar de rodar com o UPGRADE, nunca vi. Mas de que versão pra qual versão você está indo?
+Outra, uma coisa é parar de rodar o JOB, mas ele está criado dentro do banco de dados. 
+Outra, é o UPGRADE apagou todos os JOBS criados anteriormente.
+
+Bom, o alert.log, se tem um erro na execução do JOB ele vai mostrar. 
+Há outros arquivos de log, que são específicos do processo de background do JOB, esses arquivos ficam no mesmo diretório onde está o 
+alert.log, mas a composição do nome é a seguinte instancia_j<sequencial>.trc. Ex: lrprod1_j005_13523.trc
+
